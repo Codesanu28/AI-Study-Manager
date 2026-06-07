@@ -1,3 +1,4 @@
+import jsPDF from "jspdf";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
@@ -120,7 +121,42 @@ const [loadingSummary, setLoadingSummary] =
     setLoadingSummary(false);
   }
 };
+const exportPDF = (note) => {
+  const doc = new jsPDF();
 
+  doc.setFontSize(18);
+  doc.text(note.title, 20, 20);
+
+  doc.setFontSize(12);
+
+  doc.text(
+    `Category: ${
+      note.category || "General"
+    }`,
+    20,
+    35
+  );
+
+  doc.text(
+    `Created: ${new Date(
+      note.createdAt
+    ).toLocaleString()}`,
+    20,
+    45
+  );
+
+  const content =
+    doc.splitTextToSize(
+      note.content,
+      170
+    );
+
+  doc.text(content, 20, 60);
+
+  doc.save(
+    `${note.title}.pdf`
+  );
+};
   const filteredNotes = notes.filter((note) => {
     const matchesSearch =
       note.title
@@ -351,13 +387,23 @@ const [loadingSummary, setLoadingSummary] =
                       Edit
                     </button>
 
-                    <button
+                   
+ <button
   onClick={() =>
     deleteNote(note._id)
   }
   className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm"
 >
   Delete
+</button>
+
+<button
+  onClick={() =>
+    exportPDF(note)
+  }
+  className="bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded text-sm"
+>
+  📄 PDF
 </button>
 
 <button
