@@ -73,7 +73,7 @@ return ( <div className="min-h-screen bg-slate-900 text-white p-8">
         setText(e.target.value)
       }
       placeholder="Paste your study notes here..."
-      className="w-full p-4 rounded-lg text-black resize-none"
+      className="w-full p-4 rounded-lg bg-slate-700 text-white placeholder-slate-400 resize-none"
     />
 
     <div className="flex gap-4 mt-4">

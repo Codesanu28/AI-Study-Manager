@@ -6,11 +6,18 @@ const summarizeNote = async (
   res
 ) => {
   try {
-    const { note } = req.body;
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({
+        success: false,
+        message: "Text is required",
+      });
+    }
 
     const summary =
       await summarizerService.summarizeNote(
-        note
+        text
       );
 
     res.status(200).json({
@@ -18,6 +25,8 @@ const summarizeNote = async (
       summary,
     });
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       success: false,
       message: error.message,
