@@ -2,38 +2,57 @@
 
 AI-powered Study Management Platform built with MERN Stack.
 
+## 🚀 Live Demo
+
+### Frontend
+
+https://ai-study-manager-frontend.onrender.com
+
+### Backend API
+
+https://ai-study-manager-2.onrender.com
+
 ## Features
 
-- User Authentication (JWT)
-- Notes Management
-- Categories & Pin Notes
-- AI Summarizer (Groq API)
-- AI Quiz Generator
-- Quiz History Tracking
-- Study Planner
-- MongoDB Atlas Integration
-- Responsive UI with Tailwind CSS
+* JWT Authentication
+* Notes Management
+* AI Note Summarizer
+* AI Quiz Generator
+* Quiz History Tracking
+* Study Planner
+* Dashboard Analytics
+* MongoDB Atlas Integration
 
 ## Tech Stack
 
 ### Frontend
-- React.js
-- Tailwind CSS
-- Axios
-- React Router
+
+* React.js
+* React Router
+* Axios
+* Vite
 
 ### Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT Authentication
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT Authentication
 
 ### AI
-- Groq API
-- Llama 3.3 70B
+
+* Groq API
 
 ## Installation
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ### Backend
 
@@ -43,12 +62,13 @@ npm install
 npm run dev
 ```
 
-### Frontend
+## Environment Variables
 
-```bash
-cd frontend
-npm install
-npm run dev
+```env
+MONGODB_URI=
+JWT_SECRET=
+GROQ_API_KEY=
+PORT=5000
 ```
 
 ## Author
