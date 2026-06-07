@@ -20,7 +20,7 @@ setFormData({
 const handleSubmit = async (e) => {
 e.preventDefault();
 
-```
+
 try {
   const res = await api.post(
     "/auth/login",
@@ -42,7 +42,7 @@ try {
       "Login Failed"
   );
 }
-```
+
 
 };
 
