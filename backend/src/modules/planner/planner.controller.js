@@ -137,10 +137,45 @@ const getAnalytics = async (
   }
 };
 
+const generateAIPlan = async (
+  req,
+  res
+) => {
+  try {
+    const {
+      goal,
+      hoursPerDay,
+      level,
+      targetDate,
+    } = req.body;
+
+    const plan =
+      await plannerService.generateAIPlan(
+        goal,
+        hoursPerDay,
+        level,
+        targetDate
+      );
+
+    res.status(200).json({
+      success: true,
+      plan,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createPlan,
   getPlans,
   updatePlan,
   deletePlan,
-    getAnalytics,
+  getAnalytics,
+  generateAIPlan,
 };

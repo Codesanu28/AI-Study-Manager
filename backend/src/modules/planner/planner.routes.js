@@ -10,12 +10,20 @@ const router = express.Router();
 
 /*
  * Analytics Route
- * Must come before "/:id"
  */
 router.get(
   "/analytics",
   protect,
   plannerController.getAnalytics
+);
+
+/*
+ * AI Planner Route
+ */
+router.post(
+  "/generate",
+  protect,
+  plannerController.generateAIPlan
 );
 
 /*

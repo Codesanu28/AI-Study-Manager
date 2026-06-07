@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
@@ -5,31 +6,26 @@ import api from "../api/axios";
 function Planner() {
   const [plans, setPlans] = useState([]);
 
-  const [title, setTitle] =
-    useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [targetDate, setTargetDate] = useState("");
+  const [status, setStatus] = useState("Pending");
+  const [progress, setProgress] = useState(0);
+  const [editingId, setEditingId] = useState(null);
 
-  const [description, setDescription] =
-    useState("");
+  const [analytics, setAnalytics] = useState({
+    totalPlans: 0,
+    completedPlans: 0,
+    pendingPlans: 0,
+    inProgressPlans: 0,
+  });
 
-  const [targetDate, setTargetDate] =
-    useState("");
-
-  const [status, setStatus] =
-    useState("Pending");
-
-  const [progress, setProgress] =
-    useState(0);
-
-  const [editingId, setEditingId] =
-    useState(null);
-
-  const [analytics, setAnalytics] =
-    useState({
-      totalPlans: 0,
-      completedPlans: 0,
-      pendingPlans: 0,
-      inProgressPlans: 0,
-    });
+  // AI Planner States
+  const [goal, setGoal] = useState("");
+  const [hoursPerDay, setHoursPerDay] = useState(2);
+  const [level, setLevel] = useState("Beginner");
+  const [aiPlan, setAiPlan] = useState("");
+  const [loadingAI, setLoadingAI] = useState(false);
 
   useEffect(() => {
     fetchPlans();
@@ -38,99 +34,93 @@ function Planner() {
 
   const fetchPlans = async () => {
     try {
-      const res =
-        await api.get("/planner");
-
-      setPlans(
-        res.data.plans || []
-      );
+      const res = await api.get("/planner");
+      setPlans(res.data.plans || []);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const fetchAnalytics =
-    async () => {
-      try {
-        const res =
-          await api.get(
-            "/planner/analytics"
-          );
+  const fetchAnalytics = async () => {
+    try {
+      const res = await api.get("/planner/analytics");
+      setAnalytics(res.data.analytics);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-        setAnalytics(
-          res.data.analytics
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const generateAIPlan = async () => {
+    try {
+      setLoadingAI(true);
 
-  const createPlan =
-    async () => {
-      try {
-        await api.post(
-          "/planner",
-          {
-            title,
-            description,
-            targetDate,
-            status,
-            progress,
-          }
-        );
+      const res = await api.post(
+        "/planner/generate",
+        {
+          goal,
+          hoursPerDay,
+          level,
+          targetDate,
+        }
+      );
 
-        resetForm();
+      setAiPlan(res.data.plan);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to generate AI plan");
+    } finally {
+      setLoadingAI(false);
+    }
+  };
 
-        fetchPlans();
-        fetchAnalytics();
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const createPlan = async () => {
+    try {
+      await api.post("/planner", {
+        title,
+        description,
+        targetDate,
+        status,
+        progress,
+      });
 
-  const updatePlan =
-    async () => {
-      try {
-        await api.put(
-          `/planner/${editingId}`,
-          {
-            title,
-            description,
-            targetDate,
-            status,
-            progress,
-          }
-        );
+      resetForm();
+      fetchPlans();
+      fetchAnalytics();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-        resetForm();
+  const updatePlan = async () => {
+    try {
+      await api.put(`/planner/${editingId}`, {
+        title,
+        description,
+        targetDate,
+        status,
+        progress,
+      });
 
-        fetchPlans();
-        fetchAnalytics();
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      resetForm();
+      fetchPlans();
+      fetchAnalytics();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  const deletePlan =
-    async (id) => {
-      if (
-        !window.confirm(
-          "Delete this plan?"
-        )
-      )
-        return;
+  const deletePlan = async (id) => {
+    if (!window.confirm("Delete this plan?")) return;
 
-      try {
-        await api.delete(
-          `/planner/${id}`
-        );
+    try {
+      await api.delete(`/planner/${id}`);
 
-        fetchPlans();
-        fetchAnalytics();
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      fetchPlans();
+      fetchAnalytics();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const resetForm = () => {
     setTitle("");
@@ -169,29 +159,78 @@ function Planner() {
         <div className="bg-slate-800 p-4 rounded-xl">
           <h3>Completed</h3>
           <p className="text-3xl font-bold text-green-400">
-            {
-              analytics.completedPlans
-            }
+            {analytics.completedPlans}
           </p>
         </div>
 
         <div className="bg-slate-800 p-4 rounded-xl">
           <h3>Pending</h3>
           <p className="text-3xl font-bold text-yellow-400">
-            {
-              analytics.pendingPlans
-            }
+            {analytics.pendingPlans}
           </p>
         </div>
 
         <div className="bg-slate-800 p-4 rounded-xl">
           <h3>In Progress</h3>
           <p className="text-3xl font-bold text-blue-400">
-            {
-              analytics.inProgressPlans
-            }
+            {analytics.inProgressPlans}
           </p>
         </div>
+      </div>
+
+      {/* AI Planner */}
+
+      <div className="bg-slate-800 p-6 rounded-xl mb-8">
+        <h2 className="text-2xl mb-4">
+          🤖 AI Study Planner
+        </h2>
+
+        <input
+          type="text"
+          placeholder="Goal (Example: Complete Striver A2Z DSA Sheet)"
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+          className="w-full p-3 rounded bg-slate-700 mb-4"
+        />
+
+        <input
+          type="number"
+          placeholder="Hours Per Day"
+          value={hoursPerDay}
+          onChange={(e) => setHoursPerDay(e.target.value)}
+          className="w-full p-3 rounded bg-slate-700 mb-4"
+        />
+
+        <select
+          value={level}
+          onChange={(e) => setLevel(e.target.value)}
+          className="w-full p-3 rounded bg-slate-700 mb-4"
+        >
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+
+        <button
+          onClick={generateAIPlan}
+          className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-lg"
+        >
+          {loadingAI
+            ? "Generating..."
+            : "Generate AI Plan"}
+        </button>
+
+        {aiPlan && (
+          <div className="mt-6 bg-slate-700 p-5 rounded-xl">
+            <h3 className="text-xl font-bold mb-3">
+              📚 AI Generated Roadmap
+            </h3>
+
+            <pre className="whitespace-pre-wrap">
+              {aiPlan}
+            </pre>
+          </div>
+        )}
       </div>
 
       {/* Form */}
@@ -208,9 +247,7 @@ function Planner() {
           placeholder="Plan Title"
           value={title}
           onChange={(e) =>
-            setTitle(
-              e.target.value
-            )
+            setTitle(e.target.value)
           }
           className="w-full p-3 rounded bg-slate-700 mb-4"
         />
@@ -246,17 +283,9 @@ function Planner() {
           }
           className="w-full p-3 rounded bg-slate-700 mb-4"
         >
-          <option>
-            Pending
-          </option>
-
-          <option>
-            In Progress
-          </option>
-
-          <option>
-            Completed
-          </option>
+          <option>Pending</option>
+          <option>In Progress</option>
+          <option>Completed</option>
         </select>
 
         <input
@@ -314,9 +343,7 @@ function Planner() {
             </p>
 
             <p className="mt-2">
-              Status:
-              {" "}
-              {plan.status}
+              Status: {plan.status}
             </p>
 
             <div className="w-full bg-slate-700 h-3 rounded-full mt-3">
@@ -325,7 +352,7 @@ function Planner() {
                 style={{
                   width: `${plan.progress}%`,
                 }}
-              ></div>
+              />
             </div>
 
             <p className="mt-2">
@@ -338,24 +365,18 @@ function Planner() {
                   setEditingId(
                     plan._id
                   );
-
-                  setTitle(
-                    plan.title
-                  );
-
+                  setTitle(plan.title);
                   setDescription(
                     plan.description
                   );
-
                   setTargetDate(
-                    plan.targetDate
-                      .split("T")[0]
+                    plan.targetDate.split(
+                      "T"
+                    )[0]
                   );
-
                   setStatus(
                     plan.status
                   );
-
                   setProgress(
                     plan.progress
                   );
@@ -384,3 +405,4 @@ function Planner() {
 }
 
 export default Planner;
+
