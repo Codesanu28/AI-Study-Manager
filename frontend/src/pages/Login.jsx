@@ -5,17 +5,15 @@ import api from "../api/axios";
 function Login() {
   const navigate = useNavigate();
 
-  const [formData, setFormData] =
-    useState({
-      email: "",
-      password: "",
-    });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]:
-        e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -28,10 +26,7 @@ function Login() {
         formData
       );
 
-      console.log(
-        "LOGIN RESPONSE:",
-        res.data
-      );
+      console.log("LOGIN RESPONSE:", res.data);
 
       if (res.data.token) {
         localStorage.setItem(
@@ -40,13 +35,6 @@ function Login() {
         );
       }
 
-      console.log(
-        "TOKEN SAVED:",
-        localStorage.getItem(
-          "token"
-        )
-      );
-
       alert("Login Successful");
 
       navigate("/dashboard");
@@ -54,8 +42,7 @@ function Login() {
       console.error(error);
 
       alert(
-        error.response?.data
-          ?.message ||
+        error.response?.data?.message ||
           "Login Failed"
       );
     }
@@ -66,13 +53,14 @@ function Login() {
       style={{
         maxWidth: "400px",
         margin: "50px auto",
+        padding: "20px",
+        border: "1px solid #ddd",
+        borderRadius: "10px",
       }}
     >
       <h1>Login</h1>
 
-      <form
-        onSubmit={handleSubmit}
-      >
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
           name="email"
@@ -80,10 +68,12 @@ function Login() {
           value={formData.email}
           onChange={handleChange}
           required
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "10px",
+          }}
         />
-
-        <br />
-        <br />
 
         <input
           type="password"
@@ -92,15 +82,41 @@ function Login() {
           value={formData.password}
           onChange={handleChange}
           required
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "10px",
+          }}
         />
 
-        <br />
-        <br />
-
-        <button type="submit">
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "10px",
+            cursor: "pointer",
+          }}
+        >
           Login
         </button>
       </form>
+
+      <hr />
+
+      <p>
+        Don't have an account?
+      </p>
+
+      <button
+        onClick={() => navigate("/register")}
+        style={{
+          width: "100%",
+          padding: "10px",
+          cursor: "pointer",
+        }}
+      >
+        Create New Account
+      </button>
     </div>
   );
 }
