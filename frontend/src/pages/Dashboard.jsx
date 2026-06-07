@@ -9,7 +9,8 @@ function Dashboard() {
     plans: 0,
   });
 
-  const [quizHistory, setQuizHistory] = useState([]);
+  const [quizHistory, setQuizHistory] =
+    useState([]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -18,6 +19,7 @@ function Dashboard() {
   const fetchDashboardData = async () => {
     try {
       const notesRes = await api.get("/notes");
+      console.log("NOTES:", notesRes.data);
 
       let quizzesCount = 0;
       let plansCount = 0;
@@ -65,16 +67,16 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-slate-900 text-white flex">
       {/* Sidebar */}
-      <div className="w-64 bg-slate-800 p-6 border-r border-slate-700">
-        <h2 className="text-2xl font-bold mb-8 text-blue-400">
-          📚 Study Sathi
+      <div className="w-64 bg-slate-800 p-6">
+        <h2 className="text-2xl font-bold mb-8">
+          AI Study Manager
         </h2>
 
-        <ul className="space-y-2">
+        <ul className="space-y-4">
           <li>
             <Link
               to="/dashboard"
-              className="block px-3 py-2 rounded-lg hover:bg-slate-700 transition"
+              className="hover:text-blue-400"
             >
               📊 Dashboard
             </Link>
@@ -83,7 +85,7 @@ function Dashboard() {
           <li>
             <Link
               to="/notes"
-              className="block px-3 py-2 rounded-lg hover:bg-slate-700 transition"
+              className="hover:text-blue-400"
             >
               📝 Notes
             </Link>
@@ -92,7 +94,7 @@ function Dashboard() {
           <li>
             <Link
               to="/quizzes"
-              className="block px-3 py-2 rounded-lg hover:bg-slate-700 transition"
+              className="hover:text-blue-400"
             >
               ❓ Quizzes
             </Link>
@@ -101,7 +103,7 @@ function Dashboard() {
           <li>
             <Link
               to="/planner"
-              className="block px-3 py-2 rounded-lg hover:bg-slate-700 transition"
+              className="hover:text-blue-400"
             >
               📅 Planner
             </Link>
@@ -110,7 +112,7 @@ function Dashboard() {
           <li>
             <Link
               to="/aiquiz"
-              className="block px-3 py-2 rounded-lg hover:bg-slate-700 transition"
+              className="hover:text-blue-400"
             >
               🤖 AI Quiz
             </Link>
@@ -119,7 +121,7 @@ function Dashboard() {
           <li>
             <Link
               to="/summarizer"
-              className="block px-3 py-2 rounded-lg hover:bg-slate-700 transition"
+              className="hover:text-blue-400"
             >
               📚 Summarizer
             </Link>
@@ -127,7 +129,7 @@ function Dashboard() {
 
           <li
             onClick={handleLogout}
-            className="block px-3 py-2 rounded-lg text-red-400 cursor-pointer hover:bg-red-500 hover:text-white transition"
+            className="text-red-400 cursor-pointer hover:text-red-300"
           >
             🚪 Logout
           </li>
@@ -140,9 +142,8 @@ function Dashboard() {
           Dashboard
         </h1>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-slate-800 p-6 rounded-xl shadow-lg hover:scale-105 transition">
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg">
             <h2 className="text-xl">
               📝 Notes
             </h2>
@@ -152,7 +153,7 @@ function Dashboard() {
             </p>
           </div>
 
-          <div className="bg-slate-800 p-6 rounded-xl shadow-lg hover:scale-105 transition">
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg">
             <h2 className="text-xl">
               ❓ Quizzes
             </h2>
@@ -162,7 +163,7 @@ function Dashboard() {
             </p>
           </div>
 
-          <div className="bg-slate-800 p-6 rounded-xl shadow-lg hover:scale-105 transition">
+          <div className="bg-slate-800 p-6 rounded-xl shadow-lg">
             <h2 className="text-xl">
               📅 Study Plans
             </h2>
@@ -225,20 +226,20 @@ function Dashboard() {
           </h2>
 
           <p className="text-slate-400 mt-3">
-            Welcome to Study Sathi 🚀
+            Welcome to AI Study Manager 🚀
           </p>
 
           <ul className="mt-4 space-y-2">
             <li>
-              📘 Total Notes: {stats.notes}
+              Total Notes: {stats.notes}
             </li>
 
             <li>
-              🧠 Total Quizzes: {stats.quizzes}
+              Total Quizzes: {stats.quizzes}
             </li>
 
             <li>
-              📅 Total Study Plans: {stats.plans}
+              Total Study Plans: {stats.plans}
             </li>
           </ul>
         </div>
