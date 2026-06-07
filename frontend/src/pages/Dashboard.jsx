@@ -224,10 +224,10 @@ function Dashboard() {
           <h2 className="text-2xl font-semibold">
             Recent Activity
           </h2>
-
-          <p className="text-slate-400 mt-3">
-            Welcome to AI Study Manager 🚀
-          </p>
+<p className="text-slate-400 mt-3">
+  Learn • Practice • Succeed 🎯
+</p>
+          
 
           <ul className="mt-4 space-y-2">
             <li>
