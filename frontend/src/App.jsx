@@ -12,6 +12,7 @@ import Notes from "./pages/Notes";
 import Quizzes from "./pages/Quizzes";
 import Planner from "./pages/Planner";
 import AIQuiz from "./pages/AIQuiz";
+import Summarizer from "./pages/Summarizer";
 
 function App() {
   return (
@@ -57,6 +58,12 @@ function App() {
         <Route
           path="/aiquiz"
           element={<AIQuiz />}
+        />
+
+        {/* AI Summarizer Route */}
+        <Route
+          path="/summarizer"
+          element={<Summarizer />}
         />
 
       </Routes>
