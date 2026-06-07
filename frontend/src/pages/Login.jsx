@@ -77,7 +77,7 @@ marginBottom: "10px",
 >
 AI Study Manager </h1>
 
-```
+
     <p
       style={{
         textAlign: "center",
