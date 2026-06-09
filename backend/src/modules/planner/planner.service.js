@@ -115,11 +115,44 @@ Format clearly using headings and bullet points.
   return completion.choices[0]
     .message.content;
 };
+const generateMentorPlan =
+  async (
+    userPrompt
+  ) => {
+    const completion =
+      await groq.chat.completions.create(
+        {
+          messages: [
+            {
+              role:
+                "system",
+              content:
+                "You are an expert study mentor. Create detailed study plans with weekly goals, daily tasks, revision schedules, milestones, mock tests and productivity advice."
+            },
+            {
+              role:
+                "user",
+              content:
+                userPrompt
+            }
+          ],
 
+          model:
+            "llama-3.3-70b-versatile",
+
+          temperature: 0.6,
+        }
+      );
+
+    return completion
+      .choices[0]
+      .message.content;
+  };
 module.exports = {
   createPlan,
   getPlans,
   updatePlan,
   deletePlan,
   generateAIPlan,
+  generateMentorPlan,
 };

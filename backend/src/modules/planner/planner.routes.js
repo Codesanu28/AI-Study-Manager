@@ -25,10 +25,16 @@ router.post(
   protect,
   plannerController.generateAIPlan
 );
+router.post(
+  "/mentor",
+  protect,
+  plannerController.generateMentorPlan
+);
 
 /*
  * Create Plan
  */
+
 router.post(
   "/",
   protect,

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
@@ -27,6 +26,10 @@ function Planner() {
   const [aiPlan, setAiPlan] = useState("");
   const [loadingAI, setLoadingAI] = useState(false);
 
+  // AI Mentor Planner States
+  const [customPrompt, setCustomPrompt] = useState("");
+  const [mentorPlan, setMentorPlan] = useState("");
+
   useEffect(() => {
     fetchPlans();
     fetchAnalytics();
@@ -54,20 +57,34 @@ function Planner() {
     try {
       setLoadingAI(true);
 
-      const res = await api.post(
-        "/planner/generate",
-        {
-          goal,
-          hoursPerDay,
-          level,
-          targetDate,
-        }
-      );
+      const res = await api.post("/planner/generate", {
+        goal,
+        hoursPerDay,
+        level,
+        targetDate,
+      });
 
       setAiPlan(res.data.plan);
     } catch (error) {
       console.error(error);
       alert("Failed to generate AI plan");
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
+  const generateMentorPlan = async () => {
+    try {
+      setLoadingAI(true);
+
+      const res = await api.post("/planner/mentor", {
+        prompt: customPrompt,
+      });
+
+      setMentorPlan(res.data.plan);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to generate mentor plan");
     } finally {
       setLoadingAI(false);
     }
@@ -178,6 +195,45 @@ function Planner() {
         </div>
       </div>
 
+      {/* AI Mentor Planner */}
+
+      <div className="bg-slate-800 p-6 rounded-xl mb-8">
+        <h2 className="text-2xl mb-4">
+          🤖 AI Mentor Planner
+        </h2>
+
+        <textarea
+          rows="8"
+          value={customPrompt}
+          onChange={(e) =>
+            setCustomPrompt(e.target.value)
+          }
+          placeholder="Describe your study goal, current level, available time, and what you want to achieve..."
+          className="w-full p-4 rounded-lg bg-slate-700 text-white mb-4"
+        />
+
+        <button
+          onClick={generateMentorPlan}
+          className="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-lg"
+        >
+          {loadingAI
+            ? "Generating..."
+            : "Generate AI Mentor Plan"}
+        </button>
+
+        {mentorPlan && (
+          <div className="mt-6 bg-slate-700 p-5 rounded-xl">
+            <h3 className="text-xl font-bold mb-3">
+              🎯 Personalized Roadmap
+            </h3>
+
+            <pre className="whitespace-pre-wrap">
+              {mentorPlan}
+            </pre>
+          </div>
+        )}
+      </div>
+
       {/* AI Planner */}
 
       <div className="bg-slate-800 p-6 rounded-xl mb-8">
@@ -237,18 +293,14 @@ function Planner() {
 
       <div className="bg-slate-800 p-6 rounded-xl mb-8">
         <h2 className="text-2xl mb-4">
-          {editingId
-            ? "Edit Plan"
-            : "Create Plan"}
+          {editingId ? "Edit Plan" : "Create Plan"}
         </h2>
 
         <input
           type="text"
           placeholder="Plan Title"
           value={title}
-          onChange={(e) =>
-            setTitle(e.target.value)
-          }
+          onChange={(e) => setTitle(e.target.value)}
           className="w-full p-3 rounded bg-slate-700 mb-4"
         />
 
@@ -256,9 +308,7 @@ function Planner() {
           placeholder="Description"
           value={description}
           onChange={(e) =>
-            setDescription(
-              e.target.value
-            )
+            setDescription(e.target.value)
           }
           className="w-full p-3 rounded bg-slate-700 mb-4"
         />
@@ -267,9 +317,7 @@ function Planner() {
           type="date"
           value={targetDate}
           onChange={(e) =>
-            setTargetDate(
-              e.target.value
-            )
+            setTargetDate(e.target.value)
           }
           className="w-full p-3 rounded bg-slate-700 mb-4"
         />
@@ -277,9 +325,7 @@ function Planner() {
         <select
           value={status}
           onChange={(e) =>
-            setStatus(
-              e.target.value
-            )
+            setStatus(e.target.value)
           }
           className="w-full p-3 rounded bg-slate-700 mb-4"
         >
@@ -294,9 +340,7 @@ function Planner() {
           max="100"
           value={progress}
           onChange={(e) =>
-            setProgress(
-              e.target.value
-            )
+            setProgress(e.target.value)
           }
           className="w-full mb-2"
         />
@@ -362,24 +406,14 @@ function Planner() {
             <div className="flex gap-2 mt-4">
               <button
                 onClick={() => {
-                  setEditingId(
-                    plan._id
-                  );
+                  setEditingId(plan._id);
                   setTitle(plan.title);
-                  setDescription(
-                    plan.description
-                  );
+                  setDescription(plan.description);
                   setTargetDate(
-                    plan.targetDate.split(
-                      "T"
-                    )[0]
+                    plan.targetDate.split("T")[0]
                   );
-                  setStatus(
-                    plan.status
-                  );
-                  setProgress(
-                    plan.progress
-                  );
+                  setStatus(plan.status);
+                  setProgress(plan.progress);
                 }}
                 className="bg-green-600 px-3 py-1 rounded"
               >
@@ -388,9 +422,7 @@ function Planner() {
 
               <button
                 onClick={() =>
-                  deletePlan(
-                    plan._id
-                  )
+                  deletePlan(plan._id)
                 }
                 className="bg-red-600 px-3 py-1 rounded"
               >
@@ -405,4 +437,3 @@ function Planner() {
 }
 
 export default Planner;
-
